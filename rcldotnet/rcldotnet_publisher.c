@@ -33,3 +33,16 @@ int32_t native_rcl_publish(void * publisher_handle, void * raw_ros_message)
   
   return ret;
 }
+
+int32_t native_rcl_get_subscription_count(void * publisher_handle, int32_t * count_out)
+{
+  rcl_publisher_t * publisher = (rcl_publisher_t *)publisher_handle;
+
+  int32_t count = 0;
+  rcl_ret_t ret = rcl_publisher_get_subscription_count(publisher, &count);
+  if (ret != RCL_RET_OK) {
+    return ret;
+  }
+  *count_out = count;
+  return ret;
+}

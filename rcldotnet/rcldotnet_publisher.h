@@ -20,4 +20,7 @@
 RCLDOTNET_EXPORT
 int32_t RCLDOTNET_CDECL native_rcl_publish(void *, void *);
 
+RCLDOTNET_EXPORT
+int32_t RCLDOTNET_CDECL native_rcl_get_subscription_count(void* publisher_handle, int32_t* count_out);
+
 #endif // RCLDOTNET_PUBLISHER_H

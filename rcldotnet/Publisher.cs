@@ -29,6 +29,11 @@ namespace ROS2
 
         internal static NativeRCLPublishType native_rcl_publish = null;
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        internal delegate int NativeRCLGetSubscriptionCountType(SafePublisherHandle publisherHandle, out int count);
+
+        internal static NativeRCLGetSubscriptionCountType native_rcl_get_subscription_count = null;
+
         static PublisherDelegates()
         {
             _dllLoadUtils = DllLoadUtilsFactory.GetDllLoadUtils();
@@ -37,6 +42,10 @@ namespace ROS2
             IntPtr native_rcl_publish_ptr = _dllLoadUtils.GetProcAddress(nativeLibrary, "native_rcl_publish");
             PublisherDelegates.native_rcl_publish = (NativeRCLPublishType)Marshal.GetDelegateForFunctionPointer(
                 native_rcl_publish_ptr, typeof(NativeRCLPublishType));
+
+            IntPtr native_rcl_get_subscription_count_ptr = _dllLoadUtils.GetProcAddress(nativeLibrary, "native_rcl_get_subscription_count");
+            PublisherDelegates.native_rcl_get_subscription_count = (NativeRCLGetSubscriptionCountType)Marshal.GetDelegateForFunctionPointer(
+                native_rcl_get_subscription_count_ptr, typeof(NativeRCLGetSubscriptionCountType));
         }
     }
 
@@ -78,6 +87,14 @@ namespace ROS2
                 RCLRet ret = PublisherDelegates.native_rcl_publish(Handle, messageHandle);
                 RCLExceptionHelper.CheckReturnValue(ret, $"{nameof(PublisherDelegates.native_rcl_publish)}() failed.");
             }
+        }
+        
+        public int GetSubscriptionCount()
+        {
+            int count;
+            int ret = PublisherDelegates.native_rcl_get_subscription_count(Handle, out count);
+            RCLExceptionHelper.CheckReturnValue((RCLRet)ret, $"{nameof(PublisherDelegates.native_rcl_get_subscription_count)}() failed.");
+            return count;
         }
     }
 }
